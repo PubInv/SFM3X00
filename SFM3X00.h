@@ -21,31 +21,70 @@
 #include <Wire.h>
 #include <Arduino.h>
 
-// pick which sensor you're using
-#define SFM3400
-// #define SFM3200
+// I2C commands
+// see application note: https://www.sensirion.com/fileadmin/user_upload/customers/sensirion/Dokumente/5_Mass_Flow_Meters/Sensirion_Mass_Flow_Meters_Application_Note_SFM3xxx.pdf
+#define READ_SCALE_FACTOR               0x30DE
+#define READ_FLOW_OFFSET                0x30DF
+#define START_CONTINUOUS_MEASUREMENT    0x1000
+#define SOFT_RESET                      0x2000    
+// ** see application note before using temperature measurement
+#define START_TEMPERATURE_MEASUREMENT   0x1001
 
-constexpr uint8_t FLOW_SENSOR_ADDRESS {0x40};
-constexpr float   FLOW_OFFSET         {32768.0};
 
-#ifdef SFM3200
-constexpr float   FLOW_SCALE          {120.0};
-#else
-constexpr float   FLOW_SCALE          {800.0};
-#endif
+#define READ_SERIAL_NUMBER_U            0x31AE
+#define READ_SERIAL_NUMBER_L            0x31AF
+#define READ_ARTICLE_NUMBER_U           0x31E3
+#define READ_ARTICLE_NUMBER_L           0x31E4
 
-void sendCommand(uint8_t address, uint16_t command);
 
-uint16_t readData(uint8_t address);
 
-uint32_t requestSerialNumber(uint8_t address);
+class SFM3X00
+{
+  public:
+    uint8_t  sensorAddress;
+    uint32_t serialNumber;
+    uint32_t articleNumber;
+    float    flowOffset;
+    float    flowScale;
+  
+    // construct sensor with desired I2C address
+    SFM3X00(byte address)
+    {
+      this->sensorAddress = address;
+    }
+   
+    // send I2C command to sensor
+    void sendCommand(uint16_t command);
 
-uint16_t requestScaleFactor(uint8_t address);
+    // read 2 bytes of dtaa from the sensor
+    uint16_t readData();
 
-uint16_t requestOffset(uint8_t address);
+    // reads offste values and starts flow measurment
+    void begin();
+    
+    // initialize sensor with flow offset and scale values
+    void setupFlowSensor();
 
-void startContinuousMeasurement(uint8_t address);
+    // reads raw flow and calculates the real flow based on sensor values
+    // returns flow in slm
+    float readFlow();
 
-float readFlow(uint8_t address);
+    // read the serial number
+    uint32_t requestSerialNumber();
+    
+    // read the article number
+    uint32_t requestArticleNumber();
+    
+    // read the scale factor
+    uint16_t requestScaleFactor();
+    
+    // read sensor flow offset avlue
+    uint16_t requestOffset();
+
+    // start measuring flow
+    void startContinuousMeasurement();
+    
+};
+
 
 #endif 

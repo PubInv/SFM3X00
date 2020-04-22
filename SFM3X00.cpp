@@ -18,7 +18,7 @@
 #include "SFM3X00.h"
 
 
-void sendCommand(uint8_t address, uint16_t command)
+void SFM3X00::sendCommand(uint16_t command)
 {
   //Serial.println();
   //Serial.println(command, HEX);
@@ -27,17 +27,18 @@ void sendCommand(uint8_t address, uint16_t command)
   uint8_t b0 = command & 0x00FF;
   //Serial.println(b0, HEX);
 
-  Wire.beginTransmission(byte(address)); 
+  Wire.beginTransmission(byte(this->sensorAddress)); 
   Wire.write(byte(b1));      
   Wire.write(byte(b0));     
   Wire.endTransmission();
 }
 
-uint16_t readData(uint8_t address)
+
+uint16_t SFM3X00::readData()
 {
   uint8_t b[2];
 
-  Wire.requestFrom(0x40, 2); 
+  Wire.requestFrom(this->sensorAddress, 2); 
 
   b[1] = Wire.read();
   b[0] = Wire.read();
@@ -52,15 +53,15 @@ uint16_t readData(uint8_t address)
 }
 
 
-uint32_t requestSerialNumber(uint8_t address)
+uint32_t SFM3X00::requestSerialNumber()
 {
-  sendCommand(address, 0x31AE);
+  sendCommand(READ_SERIAL_NUMBER_U);
 
-  uint16_t upperBytes = readData(address);
+  uint16_t upperBytes = readData();
 
-  sendCommand(address, 0x31AF);
+  sendCommand(READ_SERIAL_NUMBER_L);
 
-  uint16_t lowerBytes = readData(address);
+  uint16_t lowerBytes = readData();
 
   uint32_t serialNumber {0};
   
@@ -70,38 +71,72 @@ uint32_t requestSerialNumber(uint8_t address)
 }
 
 
-
-uint16_t requestScaleFactor(uint8_t address)
+uint32_t SFM3X00::requestArticleNumber()
 {
-  sendCommand(address, 0x30DE);
+  sendCommand(READ_ARTICLE_NUMBER_U);
 
-  int16_t scaleFactor = readData(address);
+  uint16_t upperBytes = readData();
+
+  sendCommand(READ_ARTICLE_NUMBER_L);
+
+  uint16_t lowerBytes = readData();
+
+  uint32_t articleNumber {0};
+  
+  articleNumber = ((uint32_t)upperBytes << 16) | lowerBytes;
+  
+ return articleNumber;
+}
+
+
+
+uint16_t SFM3X00::requestScaleFactor()
+{
+  sendCommand(READ_SCALE_FACTOR);
+
+  int16_t scaleFactor = readData();
   
   return scaleFactor;
 }
 
 
-uint16_t requestOffset(uint8_t address)
+uint16_t SFM3X00::requestOffset()
 {
-  sendCommand(address, 0x30DF);
+  sendCommand(READ_FLOW_OFFSET);
 
-  uint16_t offset = readData(address);
+  uint16_t offset = readData();
   
   return offset;
 }
 
-
-void startContinuousMeasurement(uint8_t address)
+void SFM3X00::setupFlowSensor()
 {
-  sendCommand(address, 0x1000);
+  this->serialNumber = requestSerialNumber();
+  this->articleNumber = requestArticleNumber();
+  this->flowOffset   = requestOffset();
+  this->flowScale    = requestScaleFactor();
 }
 
 
-float readFlow(uint8_t address)
+void SFM3X00::startContinuousMeasurement()
 {
-  uint16_t rawFlow = readData(address);
+  sendCommand(START_CONTINUOUS_MEASUREMENT);
+}
+
+
+void SFM3X00::begin()
+{
+  this->setupFlowSensor();
+  this->startContinuousMeasurement();
+}
+
+
+
+float SFM3X00::readFlow()
+{
+  uint16_t rawFlow = readData();
    
-  float flow = ((float)rawFlow - FLOW_OFFSET) / FLOW_SCALE;
+  float flow = ((float)rawFlow - this->flowOffset) / this->flowScale;
   
   return flow;
 }
