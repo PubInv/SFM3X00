@@ -30,7 +30,6 @@
 // ** see application note before using temperature measurement
 #define START_TEMPERATURE_MEASUREMENT   0x1001
 
-
 #define READ_SERIAL_NUMBER_U            0x31AE
 #define READ_SERIAL_NUMBER_L            0x31AF
 #define READ_ARTICLE_NUMBER_U           0x31E3

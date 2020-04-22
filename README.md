@@ -2,6 +2,8 @@
 
 This library provides a lightweight interface to the Senserion SFM3400 and SFM3200 flow meters. It uses the Arduino Wire library to communicate with the flow sensors and is loosely based on the original Senserion library.
 
+See the examples directory for a sample use case.
+
 Original Senserion code can be found here: https://github.com/Sensirion/embedded-sfm
 
 For more information on the SFM3X00 series operation and I2C commands see the application note:  
