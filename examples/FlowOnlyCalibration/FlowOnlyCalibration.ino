@@ -10,22 +10,20 @@ Licensed under MIT license.
 
 
 #include <Wire.h>
-#include <SPI.h>
 #include <SFM3X00.h>
 
 // address of sensor
 // usually 64 or 0x40 by default
 #define FLOW_SENSOR_ADDRESS 0x40
 
+
+
+// Sometimes you want to install backwards because
+// of the physical connections you are using.
+bool SENSOR_INSTALLED_BACKWARD = false;
+
 // create insance of sensor with address 
 SFM3X00 flowSensor(FLOW_SENSOR_ADDRESS);
-
-//#define PIRDS_SENSIRION_SFM3200 0
-//#define PIRDS_SENSIRION_SFM3400 1
-
-// At present we have to install the SENSIRION_SFM3400 backwards
-// because of the physical mounting!!!
-bool SENSOR_INSTALLED_BACKWARD = true;
 
 void setup() {
 
@@ -44,8 +42,6 @@ void setup() {
   Serial.println(flowSensor.flowScale);
   Serial.print("read flow offset: ");
   Serial.println(flowSensor.flowOffset);
-
-  while (!Serial);
   
   delay(300);
   
@@ -69,9 +65,6 @@ float add_to_running_integration(float v,unsigned long ms,float flow_millilters_
   float f = flow_millilters_per_minute;
     // Use a basic quadrilateral integration
   // we'll treat a very small flow as zero...
-  if (abs(f) < 100.0) {
-    f = 0.0;
-  }
   float ml_per_ms = f / (60.0 * 1000.0);
   v += (ms - last_ms) * (ml_per_ms + last_flow)/2;
   last_ms = ms;
@@ -100,7 +93,7 @@ void loop() {
   float flow_milliliters_per_minute =  (flow * 1000.0);
   G_volume = add_to_running_integration(G_volume, ms,flow_milliliters_per_minute);
   
-  Serial.print("(press return to zero) Volume: ");
+  Serial.print("(press return to zero) Volume (ml): ");
   Serial.println(G_volume);
   delay(10);
 }
