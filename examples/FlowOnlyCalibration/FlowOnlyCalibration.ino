@@ -95,6 +95,7 @@ void loop() {
   float raw_flow_slm = flowSensor.readFlow();  // standard liters per minute
   float flow = (SENSOR_INSTALLED_BACKWARD) ? -raw_flow_slm : raw_flow_slm;
 
+  // if the flow is less than 0.01 then round to 0
   if(flow < MINIMUM_FLOW)
   {
      flow = 0;
