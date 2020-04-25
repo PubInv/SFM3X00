@@ -16,6 +16,8 @@ Licensed under MIT license.
 // usually 64 or 0x40 by default
 #define FLOW_SENSOR_ADDRESS 0x40
 
+// minimum flow value to recognize as valid
+#define MINIMUM_FLOW        0.01
 
 
 // Sometimes you want to install backwards because
@@ -66,9 +68,12 @@ float add_to_running_integration(float v,unsigned long ms,float flow_millilters_
     // Use a basic quadrilateral integration
   // we'll treat a very small flow as zero...
   float ml_per_ms = f / (60.0 * 1000.0);
-  v += (ms - last_ms) * (ml_per_ms + last_flow)/2;
+
+  v += (ms - last_ms) * (ml_per_ms + last_flow)/2.0;
+  
   last_ms = ms;
   last_flow = ml_per_ms;
+
   return v;
 }
 
@@ -90,10 +95,18 @@ void loop() {
   float raw_flow_slm = flowSensor.readFlow();  // standard liters per minute
   float flow = (SENSOR_INSTALLED_BACKWARD) ? -raw_flow_slm : raw_flow_slm;
 
+  if(flow < MINIMUM_FLOW)
+  {
+     flow = 0;
+  }
+
   float flow_milliliters_per_minute =  (flow * 1000.0);
+
+
   G_volume = add_to_running_integration(G_volume, ms,flow_milliliters_per_minute);
   
   Serial.print("(press return to zero) Volume (ml): ");
   Serial.println(G_volume);
+
   delay(10);
 }
