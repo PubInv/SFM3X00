@@ -77,6 +77,8 @@ float add_to_running_integration(float v,unsigned long ms,float flow_millilters_
   return v;
 }
 
+float max_recorded_flow = 0.0;
+float min_recorded_flow = 0.0;
 void loop() {
   short int incomingByte;
   while (Serial.available() > 0) {
@@ -93,8 +95,14 @@ void loop() {
   unsigned long ms = millis();
 
   float raw_flow_slm = flowSensor.readFlow();  // standard liters per minute
+  min_recorded_flow = min(min_recorded_flow,raw_flow_slm);
+  max_recorded_flow = max(max_recorded_flow,raw_flow_slm);
+
   float flow = (SENSOR_INSTALLED_BACKWARD) ? -raw_flow_slm : raw_flow_slm;
 
+
+
+  
   // if the flow is less than 0.01 then round to 0
   if(flow < MINIMUM_FLOW)
   {
@@ -108,6 +116,12 @@ void loop() {
   
   Serial.print("(press return to zero) Volume (ml): ");
   Serial.println(G_volume);
+  Serial.print("min flow: ");
+  Serial.println(min_recorded_flow);
+  Serial.print("max flow: ");
+  Serial.println(max_recorded_flow);
+  Serial.print("raw ");
+  Serial.println(raw_flow_slm);
 
   delay(10);
 }
