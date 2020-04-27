@@ -109,12 +109,24 @@ uint16_t SFM3X00::requestOffset()
   return offset;
 }
 
+
 void SFM3X00::setupFlowSensor()
 {
   this->serialNumber = requestSerialNumber();
   this->articleNumber = requestArticleNumber();
   this->flowOffset   = requestOffset();
   this->flowScale    = requestScaleFactor();
+  
+  if(this-> flowScale == 800.0)
+  {
+    this->minFlow = SFM3400_MIN;
+    this->maxFlow = SFM3400_MAX;
+  }
+  else if(this-> flowScale == 120.0)
+  {
+    this->minFlow = SFM3200_MIN;
+    this->maxFlow = SFM3200_MAX;
+  }
 }
 
 
@@ -135,9 +147,25 @@ void SFM3X00::begin()
 float SFM3X00::readFlow()
 {
   uint16_t rawFlow = readData();
+
+  if(checkRange(rawFlow))
+  {
+    Serial.println("Exceeded maximum or minimum flow!");
+  }
    
   float flow = ((float)rawFlow - this->flowOffset) / this->flowScale;
   
   return flow;
+}
+
+
+bool SFM3X00::checkRange(uint16_t rawFlow)
+{
+  if((rawFlow <= this->minFlow) || (rawFlow >= this-> maxFlow))
+  {
+    return 1;
+  }
+
+  return 0;
 }
 

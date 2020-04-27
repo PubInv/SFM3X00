@@ -21,6 +21,13 @@
 #include <Wire.h>
 #include <Arduino.h>
 
+// max and min for SFM3400
+#define SFM3400_MIN 128
+#define SFM3400_MAX 65408
+// max and min for SFM3200
+#define SFM3200_MIN 128
+#define SFM3200_MAX 65408
+
 // I2C commands
 // see application note: https://www.sensirion.com/fileadmin/user_upload/customers/sensirion/Dokumente/5_Mass_Flow_Meters/Sensirion_Mass_Flow_Meters_Application_Note_SFM3xxx.pdf
 #define READ_SCALE_FACTOR               0x30DE
@@ -45,6 +52,8 @@ class SFM3X00
     uint32_t articleNumber;
     float    flowOffset;
     float    flowScale;
+    uint16_t minFlow;
+    uint16_t maxFlow;
   
     // construct sensor with desired I2C address
     SFM3X00(byte address)
@@ -82,7 +91,10 @@ class SFM3X00
 
     // start measuring flow
     void startContinuousMeasurement();
-    
+
+    // returns 0 if measurment is within bounds
+    // returns 1 if measurment is not within bounds
+    bool checkRange(uint16_t rawFlow);
 };
 
 
