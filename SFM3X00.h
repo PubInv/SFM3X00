@@ -22,8 +22,8 @@
 #include <Arduino.h>
 
 // max and min for SFM3400
-#define SFM3400_MIN 128
-#define SFM3400_MAX 65408
+#define SFM3400_MIN 0x80   // 128 decimal
+#define SFM3400_MAX 0xFF80 // 65408 decimal
 
 // max and min for SFM3200
 #define SFM3200_MIN 0x0F4F // 3913 decimal
@@ -96,7 +96,7 @@ class SFM3X00
     // returns 0 if measurment is within bounds
     // returns 1 if measurment is not within bounds
     bool checkRange(uint16_t rawFlow);
-    bool checkRange(float rawFlow);
+    bool checkRange(float computedFlow);
 };
 
 

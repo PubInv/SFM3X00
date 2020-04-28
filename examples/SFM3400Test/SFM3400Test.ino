@@ -62,8 +62,19 @@ void loop()
 {
   // read flow from sensor and print
   float flow = flowSensor.readFlow();
-  Serial.print("flow (slm): ");
-  Serial.println(flow);
+
+  if(flowSensor.checkRange(flow))
+  {
+    Serial.print("flow exceeded sensor limits:  ");
+    Serial.print(flow);
+    Serial.println(" slm");
+  }
+  else
+  {
+    Serial.print("flow : ");
+    Serial.print(flow);
+    Serial.println(" slm");
+  }
 
   delay(SAMPLE_DELAY);
 }

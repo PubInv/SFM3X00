@@ -148,14 +148,6 @@ float SFM3X00::readFlow()
 {
   uint16_t rawFlow = readData();
 
-  // Lauria: decide what to do here---I don't believe
-  // we should write anything to the Serial port within a raw function
-  // if(checkRange(rawFlow))
-  // {
-  //   Serial.println("Exceeded maximum or minimum flow!");
-  //   Serial.println(rawFlow,HEX);
-  // }
-
   float flow = ((float)rawFlow - this->flowOffset) / this->flowScale;
 
   return flow;
@@ -167,10 +159,10 @@ bool SFM3X00::checkRange(uint16_t rawFlow)
   return ((rawFlow <= this->minFlow) || (rawFlow >= this-> maxFlow));
 }
 
-bool SFM3X00::checkRange(float rawFlow)
+bool SFM3X00::checkRange(float computedFlow)
 {
   float min_f = ((float)this->minFlow - this->flowOffset) / this->flowScale;
   float max_f = ((float)this->maxFlow - this->flowOffset) / this->flowScale;
 
-  return ((rawFlow <= min_f) || (rawFlow >= max_f));
+  return ((computedFlow <= min_f) || (computedFlow >= max_f));
 }
