@@ -10,7 +10,7 @@
  *
  *   Organization:  Public Invention
  *
- *        License:  Senserion BSD 3-Clause License
+ *        License:  Sensirion BSD 3-Clause License
  *
  * =====================================================================================
  */
@@ -27,9 +27,9 @@ void SFM3X00::sendCommand(uint16_t command)
   uint8_t b0 = command & 0x00FF;
   //Serial.println(b0, HEX);
 
-  Wire.beginTransmission(byte(this->sensorAddress)); 
-  Wire.write(byte(b1));      
-  Wire.write(byte(b0));     
+  Wire.beginTransmission(byte(this->sensorAddress));
+  Wire.write(byte(b1));
+  Wire.write(byte(b0));
   Wire.endTransmission();
 }
 
@@ -38,7 +38,7 @@ uint16_t SFM3X00::readData()
 {
   uint8_t b[2];
 
-  Wire.requestFrom(this->sensorAddress, 2); 
+  Wire.requestFrom(this->sensorAddress, 2);
 
   b[1] = Wire.read();
   b[0] = Wire.read();
@@ -64,9 +64,9 @@ uint32_t SFM3X00::requestSerialNumber()
   uint16_t lowerBytes = readData();
 
   uint32_t serialNumber {0};
-  
+
   serialNumber = ((uint32_t)upperBytes << 16) | lowerBytes;
-  
+
  return serialNumber;
 }
 
@@ -82,9 +82,9 @@ uint32_t SFM3X00::requestArticleNumber()
   uint16_t lowerBytes = readData();
 
   uint32_t articleNumber {0};
-  
+
   articleNumber = ((uint32_t)upperBytes << 16) | lowerBytes;
-  
+
  return articleNumber;
 }
 
@@ -95,7 +95,7 @@ uint16_t SFM3X00::requestScaleFactor()
   sendCommand(READ_SCALE_FACTOR);
 
   int16_t scaleFactor = readData();
-  
+
   return scaleFactor;
 }
 
@@ -105,7 +105,7 @@ uint16_t SFM3X00::requestOffset()
   sendCommand(READ_FLOW_OFFSET);
 
   uint16_t offset = readData();
-  
+
   return offset;
 }
 
@@ -116,7 +116,7 @@ void SFM3X00::setupFlowSensor()
   this->articleNumber = requestArticleNumber();
   this->flowOffset   = requestOffset();
   this->flowScale    = requestScaleFactor();
-  
+
   if(this-> flowScale == 800.0)
   {
     this->minFlow = SFM3400_MIN;
@@ -148,24 +148,29 @@ float SFM3X00::readFlow()
 {
   uint16_t rawFlow = readData();
 
-  if(checkRange(rawFlow))
-  {
-    Serial.println("Exceeded maximum or minimum flow!");
-  }
-   
+  // Lauria: decide what to do here---I don't believe
+  // we should write anything to the Serial port within a raw function
+  // if(checkRange(rawFlow))
+  // {
+  //   Serial.println("Exceeded maximum or minimum flow!");
+  //   Serial.println(rawFlow,HEX);
+  // }
+
   float flow = ((float)rawFlow - this->flowOffset) / this->flowScale;
-  
+
   return flow;
 }
 
 
 bool SFM3X00::checkRange(uint16_t rawFlow)
 {
-  if((rawFlow <= this->minFlow) || (rawFlow >= this-> maxFlow))
-  {
-    return 1;
-  }
-
-  return 0;
+  return ((rawFlow <= this->minFlow) || (rawFlow >= this-> maxFlow))
 }
 
+bool SFM3X00::checkRange(float rawFlow)
+{
+  float min_f = ((float)this->minFlow - this->flowOffset) / this->flowScale;
+  float max_f = ((float)this->maxFlow - this->flowOffset) / this->flowScale;
+
+  return ((rawFlow <= min_f) || (rawFlow >= max_f))
+}

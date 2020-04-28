@@ -17,7 +17,7 @@ Licensed under MIT license.
 #define FLOW_SENSOR_ADDRESS 0x40
 
 // minimum flow value to recognize as valid
-#define MINIMUM_FLOW        0.01
+#define MINIMUM_FLOW        0.04
 
 
 // Sometimes you want to install backwards because
@@ -95,22 +95,22 @@ void loop() {
   unsigned long ms = millis();
 
   float raw_flow_slm = flowSensor.readFlow();  // standard liters per minute
+  bool extreme_range = flowSensor.checkRange(raw_flow_slm);
+  if (extreme_range) {
+    Serial.println("RANGE OF SENSOR EXCEEDED");
+  }
   min_recorded_flow = min(min_recorded_flow,raw_flow_slm);
   max_recorded_flow = max(max_recorded_flow,raw_flow_slm);
 
   float flow = (SENSOR_INSTALLED_BACKWARD) ? -raw_flow_slm : raw_flow_slm;
-
-
-
-  
+ 
   // if the flow is less than 0.01 then round to 0
-  if(flow < MINIMUM_FLOW)
+  if(abs(flow) < MINIMUM_FLOW)
   {
      flow = 0;
   }
 
   float flow_milliliters_per_minute =  (flow * 1000.0);
-
 
   G_volume = add_to_running_integration(G_volume, ms,flow_milliliters_per_minute);
   
