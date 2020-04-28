@@ -164,7 +164,7 @@ float SFM3X00::readFlow()
 
 bool SFM3X00::checkRange(uint16_t rawFlow)
 {
-  return ((rawFlow <= this->minFlow) || (rawFlow >= this-> maxFlow))
+  return ((rawFlow <= this->minFlow) || (rawFlow >= this-> maxFlow));
 }
 
 bool SFM3X00::checkRange(float rawFlow)
@@ -172,5 +172,5 @@ bool SFM3X00::checkRange(float rawFlow)
   float min_f = ((float)this->minFlow - this->flowOffset) / this->flowScale;
   float max_f = ((float)this->maxFlow - this->flowOffset) / this->flowScale;
 
-  return ((rawFlow <= min_f) || (rawFlow >= max_f))
+  return ((rawFlow <= min_f) || (rawFlow >= max_f));
 }
