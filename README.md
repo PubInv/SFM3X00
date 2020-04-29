@@ -1,4 +1,4 @@
-## Sensirion SFM3200 and SFM3400 library for Arduino
+# Sensirion SFM3200 and SFM3400 library for Arduino
 
 This library provides a lightweight interface to the Sensirion SFM3400 and SFM3200 flow sensors. It is loosely based on the Sensirion SFM driver library for embedded platforms.  For easy interfacing within the Arduino environment, the Sensirioin I2C implementation has been replaced by the Arduino Wire library in order to communicate with the sensors.
 
@@ -7,7 +7,7 @@ for COVID-19 patients. At the time of this writng, there is global interest in f
 
 To address supply-chain shortages, some of use have used the SFM3400 neonatal flow sensor because the SFM3200 cannot be obtained. A library that encapsulates both of these provides supply chain resilience and makes them easier to use.
 
-### Useage
+## Useage
 
 See the examples directory for a sample Arduino sketch. Basic useage is below.
 
@@ -23,8 +23,13 @@ See the examples directory for a sample Arduino sketch. Basic useage is below.
 >  Serial.println(flow);  
 >}  
 
+## A Photo of the Two Sensors
 
-### Additional Documentation
+The SFM3400 is a neonatal flow sensors; it is smaller than the SFM3200 and supports a smaller flow range.
+
+![image](https://github.com/PubInv/SFM3X00/blob/master/SFM3200andSFM3400.jpg)
+
+## Additional Documentation
 
 Original Sensirion code can be found here: https://github.com/Sensirion/embedded-sfm
 
