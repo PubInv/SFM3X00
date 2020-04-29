@@ -7,7 +7,7 @@ for COVID-19 patients. At the time of this writng, there is global interest in f
 
 To address supply-chain shortages, some of use have used the SFM3400 neonatal flow sensor because the SFM3200 cannot be obtained. A library that encapsulates both of these provides supply chain resilience and makes them easier to use.
 
-## Useage
+## Usage
 
 See the examples directory for a sample Arduino sketch. Basic useage is below.
 
@@ -22,6 +22,25 @@ See the examples directory for a sample Arduino sketch. Basic useage is below.
 >  float flow = flowSensor.readFlow();  
 >  Serial.println(flow);  
 >}  
+
+### A note on ranges
+
+Particularly in the time of the COVID-19 pandemic, supply chain disruptions may force the usage of sensors outside the designed specification. We have there for provided a function, checkRange, which returns true if the flow sensor has exceeded its range as measured by our own devices, as exemplified here:
+
+>  if(flowSensor.checkRange(flow))
+>  {
+>    Serial.print("flow exceeded sensor limits:  ");
+>    Serial.print(flow);
+>    Serial.println(" slm");
+>  }
+>  else
+>  {
+>    Serial.print("flow : ");
+>    Serial.print(flow);
+>    Serial.println(" slm");
+>  }
+
+
 
 ## A Photo of the Two Sensors
 
