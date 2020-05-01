@@ -27,18 +27,15 @@ See the examples directory for a sample Arduino sketch. Basic useage is below.
 
 Particularly in the time of the COVID-19 pandemic, supply chain disruptions may force the usage of sensors outside the designed specification. We have there for provided a function, checkRange, which returns true if the flow sensor has exceeded its range as measured by our own devices, as exemplified here:
 
->  if(flowSensor.checkRange(flow))
->  {
->    Serial.print("flow exceeded sensor limits:  ");
->    Serial.print(flow);
->    Serial.println(" slm");
->  }
->  else
->  {
->    Serial.print("flow : ");
->    Serial.print(flow);
->    Serial.println(" slm");
->  }
+>  if(flowSensor.checkRange(flow)) {  
+>    Serial.print("flow exceeded sensor limits:  ");  
+>    Serial.print(flow);  
+>    Serial.println(" slm");  
+>  }  else  {  
+>    Serial.print("flow : ");  
+>    Serial.print(flow);  
+>    Serial.println(" slm");  
+>  }  
 
 
 
