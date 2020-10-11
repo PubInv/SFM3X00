@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/257937618.svg)](https://zenodo.org/badge/latestdoi/257937618)
+
 # Sensirion SFM3200 and SFM3400 library for Arduino
 
 This library provides a lightweight interface to the Sensirion SFM3400 and SFM3200 flow sensors. It is loosely based on the Sensirion SFM driver library for embedded platforms.  For easy interfacing within the Arduino environment, the Sensirion I2C implementation has been replaced by the Arduino Wire library in order to communicate with the sensors.
