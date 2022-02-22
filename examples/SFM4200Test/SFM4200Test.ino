@@ -31,7 +31,7 @@ void setup()
 {
   // establish serial communication
   Wire.begin();
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   // initialize sensor values and start measuring flow
   flowSensor.begin();

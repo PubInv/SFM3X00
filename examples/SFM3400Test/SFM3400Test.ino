@@ -18,7 +18,7 @@
 #include <SFM3X00.h>
 
 // delay between readings
-#define SAMPLE_DELAY   550
+#define SAMPLE_DELAY   1550
 
 // address of sensor
 // usually 64 or 0x40 by default
@@ -35,6 +35,7 @@ void setup()
 
   // initialize sensor values and start measuring flow
   flowSensor.begin();
+  delay(1000);
 
   // print various sensor values
   Serial.println();
@@ -54,12 +55,14 @@ void setup()
   Serial.println(" Hz");
   Serial.println();
 
+  flowSensor.begin();
   delay(5);
 }
 
 
 void loop()
 {
+
   // read flow from sensor and print
   float flow = flowSensor.readFlow();
 
