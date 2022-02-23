@@ -18,8 +18,9 @@
 #ifndef SFM3X00_H
 #define SFM3X00_H
 
-#include <Wire.h>
 #include <Arduino.h>
+#include <Wire.h>
+
 
 // max and min for SFM3400
 #define SFM3400_MIN 0x80   // 128 decimal

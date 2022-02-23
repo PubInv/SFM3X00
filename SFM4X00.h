@@ -18,8 +18,8 @@
 #ifndef SFM4X00_H
 #define SFM4X00_H
 
-#include <Wire.h>
 #include <Arduino.h>
+#include <Wire.h>
 
 // max and min for SFM3400
 #define SFM3400_MIN 0x80   // 128 decimal
@@ -95,9 +95,9 @@ class SFM4x00
     // read sensor temperature offset value
     uint16_t requestTOffset();
 
-    // read Status word from sensor 
+    // read Status word from sensor
     uint16_t requestStatus();
-    
+
     // Take one flow measurement
     float takeFlowMeas();
 
