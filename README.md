@@ -51,7 +51,7 @@ Particularly in the time of the COVID-19 pandemic, supply chain disruptions may 
 
 The SFM3400 is a neonatal flow sensors; it is smaller than the SFM3200 and supports a smaller flow range.
 
-![image](https://github.com/PubInv/SFM3X00/blob/master/SFM3200andSFM3400.jpg)
+![image](https://github.com/PubInv/SFM3X00/blob/master/extras/SFM3200andSFM3400.jpg)
 
 ## Additional Documentation
 
