@@ -18,7 +18,7 @@
 #include <SFM3X00.h>
 
 // delay between readings
-#define SAMPLE_DELAY   1550
+#define SAMPLE_DELAY   5000
 
 // address of sensor
 // usually 64 or 0x40 by default
@@ -26,13 +26,16 @@
 
 // create insance of sensor with address 
 SFM3X00 flowSensor(FLOW_SENSOR_ADDRESS);
-
+#define CLOCK_SPEED_HZ 10000
 void setup()
 {
   // establish serial communication
   Wire.begin();
-  Serial.begin(9600);
 
+  Serial.begin(9600);
+  // 50K works well with the Adrafruit I2C activator, but why push it?
+ Wire.setClock(5000);
+  
   // initialize sensor values and start measuring flow
   flowSensor.begin();
   delay(1000);
@@ -64,20 +67,26 @@ void loop()
 {
 
   // read flow from sensor and print
+//  flowSensor.begin();
+
+  
   float flow = flowSensor.readFlow();
 
   if(flowSensor.checkRange(flow))
   {
     Serial.print("flow exceeded sensor limits:  ");
     Serial.print(flow);
-    Serial.println(" slm");
+    Serial.println(" slm"); 
   }
   else
   {
     Serial.print("flow : ");
-    Serial.print(flow);
-    Serial.println(" slm");
+    Serial.println(flow);
+     
   }
 
-  delay(SAMPLE_DELAY);
+
+//  delay(SAMPLE_DELAY);
+  Serial.println("reading in two!");
+//     delay(2000); 
 }
